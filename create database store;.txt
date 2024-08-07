@@ -1,0 +1,70 @@
+ create database store;
+
+create table countries(
+    code int primary key ,
+    name varchar(20) unique ,
+    continent_name varchar(20) not null
+);
+
+create table users(
+    id int primary key ,
+    email varchar(20) unique ,
+    gender char(1) check ( gender='m' or gender='f' ),
+    date_of_birth varchar(15) ,
+    created_at datetime default current_timestamp ,
+    country_code int ,
+    foreign key (country_code)references countries(code)
+);
+
+create table orders(
+    id int primary key ,
+    status varchar(6) check ( status='start' or status='finish' ),
+    created_at datetime default current_timestamp,
+    user_id int,
+    foreign key (user_id) references users(id)
+);
+
+create table order_products(
+    quantity int default 0,
+    order_id int ,
+    foreign key (order_id) references orders(id),
+    product_id int ,
+    foreign key (product_id) references products(id)
+);
+
+create table products(
+    id int primary key ,
+    name varchar(10) not null ,
+    price int default 0,
+    status varchar(10) check ( status='valid' or status='expired' ),
+    created_at datetime default current_timestamp
+);
+
+
+
+#DML - insert -update - delete
+insert into countries values (111,'Germany','Europe');
+insert into countries values (222,'Australia','Oceania');
+
+insert into users values (1,'Admin12@email.com','m','1999-12-08',default,111);
+insert into users values (2,'Stut12@hotmail.com','f','2001-08-08',default,222);
+
+insert into orders values (1,'start',default,1);
+insert into orders values (2,'finish',default,2);
+
+insert into products values (1 ,'ProductA',100,'valid',default);
+insert into products values (2,'ProductB',50,'expired' ,default);
+
+insert into order_products values (3,1,1);
+
+
+update countries set  countries.name= 'JAPAN' ,continent_name ='Asia'   where code=111111;
+update countries set  countries.code=33333 , name='SAUDI' ,continent_name='ASIA' where code=222222;
+delete from products where id=2;
+
+
+select * from countries;
+select * from users;
+select * from orders;
+select * from order_products;
+select * from products;
